@@ -2,4 +2,4 @@ import crsp
 
 problem = crsp.CRSP("data/problem0.json")
 
-problem.solve()
+#problem.solve()
