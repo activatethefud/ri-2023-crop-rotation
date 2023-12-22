@@ -1,5 +1,8 @@
 import json
 import numpy as np
+import random as rd
+import functools
+import operator
 
 class CRSPSolution:
 
@@ -21,15 +24,26 @@ class CRSPSolution:
     
     def set_plan(self, new_plan):
         self.plan = np.copy(new_plan)
+    
+    def recombination(self, parents):
+        mu = len(parents)
+
+        self.plan = functools.reduce(operator.add, (p.plan for p in parents))//mu
+        self.mutation_strength = functools.reduce(operator.add, (p.mutation_strength for p in parents))/mu
+
+        return self
 
     def crossover(self, parent):
+
+        new_mutation_strength = (self.mutation_strength+parent.mutation_strength)/2
+
         new_sol = CRSPSolution(
             self.N,
             self.M,
             self.K,
             self.T,
             self.I,
-            self.mutation_strength
+            new_mutation_strength
         )
 
         mask = np.random.randint(2, size = self.plan.shape)
@@ -90,10 +104,18 @@ class CRSP:
                     idx
                 )
             
-            self.T = [ c["grow_time"]//self.M for c in self.crops ] # grow times for crop c
+            days_per_period = 365//self.M
+            
+            self.T = [ c["grow_time"]//days_per_period for c in self.crops ] # grow times for crop c
             self.F = [ family_mapping[c["family"]] for c in self.crops ] # family for crop c
-            self.I = [ list(map(lambda x : x*30//self.M,c["planting_month"])) for c in self.crops ] # planting periods for crop c
+            self.I = [ list(map(lambda x : (x-1)*self.M//12,c["planting_month"])) for c in self.crops ] # planting periods for crop c
             self.C = self.crops_idx
+            self.D = [] # Green manure crops
+
+            for idx, crop in enumerate(self.crops):
+                if crop["name"] in ["grasak"]:
+                    self.D.append(idx)
+
 
     def objective(self, sol):
 
@@ -123,8 +145,20 @@ class CRSP:
                 
         return penalty
     
-    def constraint3(self):
-        pass
+    def constraint3(self, sol):
+        # Green manure constraint
+        penalty = 0
+
+        for k in range(self.K):
+            _sum = 0
+
+            for d in self.D: # manure crop idxs
+                for j in self.I[d]:
+                    _sum += sol.plan[d][j][k]
+            
+            penalty += self.hard_penalty if _sum == 0 else 0
+
+        return penalty
     
     def constraint4(self, sol):
         # Must be at least one fallow period in each plot
@@ -162,6 +196,7 @@ class CRSP:
 
         _fitness = self.objective(sol) +\
                    self.constraint2(sol) +\
+                   self.constraint3(sol) +\
                    self.constraint4(sol)
         
 
@@ -186,13 +221,15 @@ class CRSP:
         for gen_idx in range(numof_generations):
 
             scores = sorted([(self.fitness(s), s) for s in self.population], key = lambda x : x[0], reverse = True)
+            #new_pop = [x[1] for x in scores[:2]]
             new_pop = []
 
+            #for _ in range(self.population_size - 2):
             for _ in range(self.population_size):
-                parent_idx = np.random.randint(self.numof_parents)
-                parent = scores[parent_idx][1]
 
-                parent_idx_2 = np.random.randint(self.numof_parents)
+                parent_idx, parent_idx_2 = rd.choices( range(self.numof_parents), k = 2)
+
+                parent = scores[parent_idx][1]
                 parent2 = scores[parent_idx_2][1]
 
                 child = parent.crossover(parent2).mutation()
