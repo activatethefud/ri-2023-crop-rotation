@@ -8,11 +8,11 @@ class CRSPSolution:
 
     def __init__(self, N, M, K, T, I, mutation_strength = 0.2):
 
-        self.N = N
-        self.M = M
-        self.K = K
-        self.T = T
-        self.I = I
+        self.N = N # Number of crops
+        self.M = M # Number of periods
+        self.K = K # Number of fields
+        self.T = T # Vegetation period of crops (in periods)
+        self.I = I # Crops planting periods
         self.learning_rate = 0.2
         self.mutation_strength = mutation_strength
 
@@ -171,8 +171,32 @@ class CRSP:
         return penalty
     
     def constraint5(self):
-        pass
+        # Two of the same family cannot be in succession (with no fallow in between)
+
+        penalty = 0
+
+        #for k in range(self.K):
+        #    for j in range(self.M):
+        #        _sum = 0
+
+        #        for F in self.F:
+        #            for i in F:
+
+
+
+        return penalty
     
+    def constraint7(self, sol):
+        # Each crop must be planted withing it's planting periods
+        # Variable constraints
+        penalty = 0
+
+        for i in range(self.N):
+            Ic = np.array([ic for ic in range(self.M) if ic not in self.I[i]])
+            penalty += self.hard_penalty * sol.plan[i,Ic,:].sum()
+
+        return penalty
+
     def init(self):
 
         self.population = []
@@ -197,7 +221,8 @@ class CRSP:
         _fitness = self.objective(sol) +\
                    self.constraint2(sol) +\
                    self.constraint3(sol) +\
-                   self.constraint4(sol)
+                   self.constraint4(sol) +\
+                   self.constraint7(sol)
         
 
         if _fitness > self.best_fitness:
