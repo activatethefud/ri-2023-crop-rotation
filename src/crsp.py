@@ -24,7 +24,7 @@ class CRSPSolution:
     
     def set_plan(self, new_plan):
         self.plan = np.copy(new_plan)
-    
+
     def recombination(self, parents):
         mu = len(parents)
 
@@ -70,11 +70,13 @@ class CRSP:
         self.load_problem(problem_filename)
 
         self.hard_penalty = -100
+        self.soft_penalty = -0.1
 
         self.mutation_strength = 0.1
         self.population = []
         self.numof_parents = 5
         self.population_size = 20
+        self.elitism = 0
         self.best_fitness = float("-inf")
         self.best_sol = None
         self.running_counter = 0
@@ -88,6 +90,7 @@ class CRSP:
 
             self.M = self.problem_definition["time_units"]
             self.K = len(self.problem_definition["plot_adjacency"])
+            self.plot_adjacency = self.problem_definition["plot_adjacency"]
             self.crops = self.problem_definition["crops"]
             self.crops_idx = list(range(len(self.crops)))
 
@@ -104,9 +107,9 @@ class CRSP:
                     idx
                 )
             
-            days_per_period = 365//self.M
+            self.days_per_period = 365//self.M
             
-            self.T = [ c["grow_time"]//days_per_period for c in self.crops ] # grow times for crop c
+            self.T = [ c["grow_time"]//self.days_per_period for c in self.crops ] # grow times for crop c
             self.F = [ family_mapping[c["family"]] for c in self.crops ] # family for crop c
             self.I = [ list(map(lambda x : (x-1)*self.M//12,c["planting_month"])) for c in self.crops ] # planting periods for crop c
             self.C = self.crops_idx
@@ -124,7 +127,8 @@ class CRSP:
         for k in range(self.K):
             for c in range(self.N-1):
                 for t in self.I[c]:
-                    score += sol.plan[c][t][k] * self.T[c]
+                    score += sol.plan[c][t][k] * self.T[c] # Time on land spent growing
+                    #score += sol.plan[c][t][k] * self.crops[c]["plants_per_hectare"]/100/100
 
         return score
 
@@ -156,7 +160,8 @@ class CRSP:
                 for j in self.I[d]:
                     _sum += sol.plan[d][j][k]
             
-            penalty += self.hard_penalty if _sum == 0 else 0
+            #penalty += self.hard_penalty if _sum == 0 else 0
+            penalty += self.soft_penalty if _sum == 0 else 0
 
         return penalty
     
@@ -166,28 +171,53 @@ class CRSP:
         penalty = 0
         for k in range(self.K):
             _sum = sol.plan[self.N-1,:,k].sum()
-            penalty += self.hard_penalty if _sum == 0 else 0
+            #penalty += self.hard_penalty if _sum == 0 else 0
+            penalty += self.soft_penalty if _sum == 0 else 0
         
         return penalty
     
-    def constraint5(self):
+    def constraint5(self,sol):
         # Two of the same family cannot be in succession (with no fallow in between)
+        # This is the crop rotation constraint
 
         penalty = 0
 
-        #for k in range(self.K):
-        #    for j in range(self.M):
-        #        _sum = 0
+        for k in range(self.K):
+            for f in self.B[:-1]: # Remove fallow
+                for j in range(self.M):
+                    _sum = 0
 
-        #        for F in self.F:
-        #            for i in F:
-
+                    for i in f:
+                        #q = self.T[i]+self.T[-1]-1
+                        q = self.T[i]+self.T[-1]
+                        _sum += sol.plan[i,max(0,j-q):j,k].sum()
+                    
+                    penalty += self.hard_penalty * _sum if _sum > 1 else 0
 
 
         return penalty
     
+    def constraint6(self,sol):
+        # Same botanical families should not be planted in adjacent fields
+
+        penalty = 0
+
+        for k in range(self.K):
+            for f in self.B[:-1]:
+                for c1 in f:
+                    q = self.T[c1]
+                    for c1i in self.I[c1]:
+                        _sum = 0
+                        for c2 in f:
+                            _sum = 0
+                            for k_adj in self.plot_adjacency[k]:
+                                _sum += sol.plan[c1,c1i:c1i+q,k].sum() + sol.plan[c2,c1i:c1i+q,k_adj].sum()
+                                penalty += self.hard_penalty * _sum if _sum > 1 else 0
+
+        return penalty
+
     def constraint7(self, sol):
-        # Each crop must be planted withing it's planting periods
+        # Each crop must be planted within it's planting periods
         # Variable constraints
         penalty = 0
 
@@ -222,6 +252,8 @@ class CRSP:
                    self.constraint2(sol) +\
                    self.constraint3(sol) +\
                    self.constraint4(sol) +\
+                   self.constraint5(sol) +\
+                   self.constraint6(sol) +\
                    self.constraint7(sol)
         
 
@@ -245,12 +277,12 @@ class CRSP:
 
         for gen_idx in range(numof_generations):
 
-            scores = sorted([(self.fitness(s), s) for s in self.population], key = lambda x : x[0], reverse = True)
+            scores = sorted([(self.fitness(s), s) for s in self.population], key = lambda x: x[0], reverse=True)
             #new_pop = [x[1] for x in scores[:2]]
-            new_pop = []
+            new_pop = [s[1] for s in scores[:self.elitism]]
 
             #for _ in range(self.population_size - 2):
-            for _ in range(self.population_size):
+            for _ in range(self.elitism,self.population_size):
 
                 parent_idx, parent_idx_2 = rd.choices( range(self.numof_parents), k = 2)
 
