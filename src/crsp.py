@@ -113,6 +113,7 @@ class CRSP:
             self.T = [ c["grow_time"]//self.days_per_period for c in self.crops ] # grow times for crop c
             self.F = [ family_mapping[c["family"]] for c in self.crops ] # family for crop c
             self.I = [ list(map(lambda x : (x-1)*self.M//12,c["planting_month"])) for c in self.crops ] # planting periods for crop c
+            self.Y = [ c["yield"] for c in self.crops ]
             self.C = self.crops_idx
             self.D = [] # Green manure crops
 
@@ -128,7 +129,8 @@ class CRSP:
         for k in range(self.K):
             for c in range(self.N-1):
                 for t in self.I[c]:
-                    score += sol.plan[c][t][k] * self.T[c] # Time on land spent growing
+                    #score += sol.plan[c][t][k] * self.T[c] # Time on land spent growing
+                    score += sol.plan[c][t][k] * self.Y[c] # Maximize yield
                     #score += sol.plan[c][t][k] * self.crops[c]["plants_per_hectare"]/100/100
 
         return score
