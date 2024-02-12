@@ -3,6 +3,7 @@ import numpy as np
 import random as rd
 import functools
 import operator
+import math
 import matplotlib.pyplot as plt
 
 class CRSPSolution:
@@ -110,7 +111,7 @@ class CRSP:
             
             self.days_per_period = 365//self.M
             
-            self.T = [ c["grow_time"]//self.days_per_period for c in self.crops ] # grow times for crop c
+            self.T = [ math.ceil(c["grow_time"]/self.days_per_period) for c in self.crops ] # grow times for crop c
             self.F = [ family_mapping[c["family"]] for c in self.crops ] # family for crop c
             self.I = [ list(map(lambda x : (x-1)*self.M//12,c["planting_month"])) for c in self.crops ] # planting periods for crop c
             self.Y = [ c["yield"] for c in self.crops ]
@@ -314,7 +315,7 @@ class CRSP:
 
         for c in self.crops:
             crop_name = c["name"]
-            crop_hash = hash(crop_name)
+            crop_hash = abs(hash(crop_name))
 
             if crop_name == "fallow":
                 crop_colors[crop_name] = (0.5,0.5,0.5)
