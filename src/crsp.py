@@ -302,3 +302,58 @@ class CRSP:
 
         if sol == None:
             sol = self.best_sol
+        
+        labels = set()
+        width = 1
+        max_x = self.M
+        fig, ax = plt.subplots()
+
+        crop_colors = {}
+
+        #plt.clf()
+
+        for c in self.crops:
+            crop_name = c["name"]
+            crop_hash = hash(crop_name)
+
+            if crop_name == "fallow":
+                crop_colors[crop_name] = (0.5,0.5,0.5)
+            else:
+                crop_colors[crop_name] = (
+                    (crop_hash/10)%10/10,
+                    (crop_hash/100)%10/10,
+                    (crop_hash/1000)%10/10
+                )
+
+        for k in range(self.K):
+            for period in range(self.M):
+                crop = np.argmax(sol.plan[:,period,k])
+
+                if sol.plan[:-1,period,k].sum() == 0: # nothing planted
+                    continue
+                    #crop = self.N-1 # fallow
+
+                crop_name = self.crops[crop]["name"]
+                xs = list(range(period, period + self.T[crop]))
+                ys = [1] * len(xs)
+                color = crop_colors[crop_name]
+                bottom = [k] * len(xs)
+                label = crop_name if crop_name not in labels else None
+                labels.add(crop_name)
+                ax.bar(xs, ys, width, bottom = bottom, color = color, label = label, align="edge")
+        
+
+        plt.title("Crop Rotation")
+        ax.set_xlabel("Period")
+        ax.set_ylabel("Plot")
+        ax.set_xticks(list(range(max_x+1)))
+        ax.set_yticks(list(range(1, self.K + 1)))
+
+        box = ax.get_position()
+        ax.set_position([box.x0, box.y0, box.width*0.7, box.height])
+        ax.legend(loc = 'upper center', bbox_to_anchor=(1.3,1), shadow = True)
+
+        plt.grid(axis='x')
+        plt.grid(axis='y')
+
+        plt.show()
