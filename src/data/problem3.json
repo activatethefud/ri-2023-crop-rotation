@@ -1,0 +1,242 @@
+{
+    "time_units": 24,
+
+  "plot_adjacency": [
+    [1, 3],
+    [0, 2, 4],
+    [1, 5],
+    [0, 4, 6],
+    [1, 3, 5, 7],
+    [2, 4, 8],
+    [3, 7],
+    [4, 6, 8],
+    [5, 7]
+  ],
+
+    "crops": [
+  {
+    "name": "paradajz",
+    "family": "Solanaceae",
+    "planting_month": [1, 2, 4, 5],
+    "grow_time": 60,
+    "plants_per_hectare": 30000,
+    "yield": 12.5
+  },
+  {
+    "name": "rani paradajz",
+    "family": "Solanaceae",
+    "planting_month": [4],
+    "grow_time": 60,
+    "plants_per_hectare": 30000,
+    "yield": 12.5
+  },
+  {
+    "name": "kasni paradajz",
+    "family": "Solanaceae",
+    "planting_month": [7],
+    "grow_time": 100,
+    "plants_per_hectare": 30000,
+    "yield": 12.5
+  },
+  {
+    "name": "paprika",
+    "family": "Solanaceae",
+    "planting_month": [1, 2, 4, 5],
+    "grow_time": 60,
+    "plants_per_hectare": 20000,
+    "yield": 7.5
+  },
+  {
+    "name": "salata",
+    "family": "Asteraceae",
+    "planting_month": [1, 2, 9],
+    "grow_time": 45,
+    "plants_per_hectare": 40000,
+    "yield": 15
+  },
+  {
+    "name": "krastavac",
+    "family": "Cucurbitaceae",
+    "planting_month": [1, 4, 5, 7],
+    "grow_time": 50,
+    "plants_per_hectare": 25000,
+    "yield": 20
+  },
+  {
+    "name": "kupus",
+    "family": "Brassicaceae",
+    "planting_month": [2, 3, 4],
+    "grow_time": 70,
+    "plants_per_hectare": 15000,
+    "yield": 40
+  },
+  {
+    "name": "keleraba",
+    "family": "Brassicaceae",
+    "planting_month": [2, 3, 4],
+    "grow_time": 50,
+    "plants_per_hectare": 20000,
+    "yield": 30
+  },
+  {
+    "name": "peršun",
+    "family": "Apiaceae",
+    "planting_month": [2, 3],
+    "grow_time": 70,
+    "plants_per_hectare": 300000,
+    "yield": 2.5
+  },
+  {
+    "name": "šargarepa",
+    "family": "Apiaceae",
+    "planting_month": [2, 3, 6],
+    "grow_time": 50,
+    "plants_per_hectare": 100000,
+    "yield": 30
+  },
+  {
+    "name": "paškanat",
+    "family": "Apiaceae",
+    "planting_month": [2, 3],
+    "grow_time": 100,
+    "plants_per_hectare": 100000,
+    "yield": 25
+  },
+  {
+    "name": "rotkvice",
+    "family": "Brassicaceae",
+    "planting_month": [2, 3, 4, 8, 9],
+    "grow_time": 20,
+    "plants_per_hectare": 200000,
+    "yield": 10
+  },
+  {
+    "name": "spanać",
+    "family": "Amaranthaceae",
+    "planting_month": [2, 3, 9],
+    "grow_time": 40,
+    "plants_per_hectare": 300000,
+    "yield": 15
+  },
+  {
+    "name": "grašak",
+    "family": "Fabaceae",
+    "planting_month": [2, 3],
+    "grow_time": 60,
+    "plants_per_hectare": 50000,
+    "yield": 3
+  },
+  {
+    "name": "kelj",
+    "family": "Brassicaceae",
+    "planting_month": [3, 4, 5, 6],
+    "grow_time": 55,
+    "plants_per_hectare": 15000,
+    "yield": 35
+  },
+  {
+    "name": "krompir",
+    "family": "Solanaceae",
+    "planting_month": [3, 4],
+    "grow_time": 90,
+    "plants_per_hectare": 40000,
+    "yield": 25
+  },
+  {
+    "name": "ren",
+    "family": "Brassicaceae",
+    "planting_month": [3],
+    "grow_time": 150,
+    "plants_per_hectare": 15000,
+    "yield": 20
+  },
+  {
+    "name": "pasulj",
+    "family": "Fabaceae",
+    "planting_month": [4, 5],
+    "grow_time": 55,
+    "plants_per_hectare": 60000,
+    "yield": 1.2
+  },
+  {
+    "name": "tikvice",
+    "family": "Cucurbitaceae",
+    "planting_month": [4, 6],
+    "grow_time": 45,
+    "plants_per_hectare": 10000,
+    "yield": 15
+  },
+  {
+    "name": "kukuruz šećerac",
+    "family": "Poaceae",
+    "planting_month": [4, 5],
+    "grow_time": 60,
+    "plants_per_hectare": 70000,
+    "yield": 12
+  },
+  {
+    "name": "lubenica",
+    "family": "Cucurbitaceae",
+    "planting_month": [5],
+    "grow_time": 80,
+    "plants_per_hectare": 5000,
+    "yield": 30
+  },
+  {
+    "name": "dinja",
+    "family": "Cucurbitaceae",
+    "planting_month": [5],
+    "grow_time": 80,
+    "plants_per_hectare": 5000,
+    "yield": 25
+  },
+  {
+    "name": "plavi patlidžan",
+    "family": "Solanaceae",
+    "planting_month": [5],
+    "grow_time": 100,
+    "plants_per_hectare": 20000,
+    "yield": 15
+  },
+  {
+    "name": "celer",
+    "family": "Apiaceae",
+    "planting_month": [3, 5],
+    "grow_time": 130,
+    "plants_per_hectare": 80000,
+    "yield": 3.5
+  },
+  {
+    "name": "cvekla",
+    "family": "Amaranthaceae",
+    "planting_month": [6],
+    "grow_time": 50,
+    "plants_per_hectare": 70000,
+    "yield": 25
+  },
+  {
+    "name": "praziluk",
+    "family": "Amaryllidaceae",
+    "planting_month": [6],
+    "grow_time": 120,
+    "plants_per_hectare": 60000,
+    "yield": 15
+  },
+  {
+    "name": "kornišoni",
+    "family": "Cucurbitaceae",
+    "planting_month": [7],
+    "grow_time": 50,
+    "plants_per_hectare": 30000,
+    "yield": 12
+  },
+  {
+    "name": "jesenji kupus",
+    "family": "Brassicaceae",
+    "planting_month": [7],
+    "grow_time": 70,
+    "plants_per_hectare": 15000,
+    "yield": 40
+  }
+ ]
+}
