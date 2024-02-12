@@ -3,6 +3,7 @@ import numpy as np
 import random as rd
 import functools
 import operator
+import matplotlib.pyplot as plt
 
 class CRSPSolution:
 
@@ -293,3 +294,9 @@ class CRSP:
                 new_pop.append(child)
             
             self.population = new_pop
+    
+
+    def render_solution(self, sol = None, save_fig = False):
+
+        if sol == None:
+            sol = self.best_sol

@@ -1,15 +1,10 @@
 {
   "time_units": 24,
   "plot_adjacency": [
-    [1, 3],
-    [0, 2, 4],
-    [1, 5],
-    [0, 4, 6],
-    [1, 3, 5, 7],
-    [2, 4, 8],
-    [3, 7],
-    [4, 6, 8],
-    [4, 5, 7]
+    [],
+    [],
+    [],
+    []
   ],
   "crops": [
     {
@@ -89,8 +84,8 @@
       "family": "fallow",
       "planting_month": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       "grow_time": 30,
-      "plants_per_hectare": 0,
-      "yield": 0
+      "plants_per_hectare": 0, 
+      "yield": 0 
     }
   ]
 }
