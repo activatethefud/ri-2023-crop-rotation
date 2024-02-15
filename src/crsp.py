@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 class CRSPSolution:
 
-    def __init__(self, N, M, K, T, I, B, mutation_strength = 0.2):
+    def __init__(self, N, M, K, T, I, B, PPP, mutation_strength = 0.2):
 
         self.N = N # Number of crops
         self.M = M # Number of periods
@@ -16,6 +16,7 @@ class CRSPSolution:
         self.T = T # Vegetation period of crops (in periods)
         self.I = I # Crops planting periods
         self.B = B # Crop families seperated
+        self.PPP = PPP # Plants per plot
         self.learning_rate = 0.2
         self.mutation_strength = mutation_strength
 
@@ -25,34 +26,32 @@ class CRSPSolution:
             self.K
         ))
     
-    def generate_plot(self):
+    def generate_plot(self, k):
 
         plot = np.zeros((self.N, self.M))
         B_order = list(range(len(self.B)))
         rd.shuffle(B_order)
         t = 0
+        b = 0
+
+        last_planted_family = None
 
         while t < self.M:
 
             time_left = self.M - t - 1
 
             for b in B_order:
-
-                planted = False
-
                 for c in self.B[b]:
-                    if t in self.I[c] and time_left >= self.T[c] and rd.randint(0,1) > 0:
+                    if t in self.I[c] \
+                        and time_left >= self.T[c] \
+                        and rd.randint(0,1) > 0 \
+                        and self.PPP[c][k] > 0:
                         plot[c][t] = 1
                         t += self.T[c]
                         time_left -= t
-                        planted = True
+                        last_planted_family = b
                         break
                 
-                if planted: # If a plant family is planted, then put a fallow period
-                    t += self.T[-1]
-                    time_left -= self.T[-1]
-
-            
             t += 1
         
         return plot
@@ -60,7 +59,7 @@ class CRSPSolution:
 
     def initialize(self):
         for k in range(self.K):
-            self.plan[:,:,k] = self.generate_plot()
+            self.plan[:,:,k] = self.generate_plot(k)
         
         return self
     
@@ -86,6 +85,7 @@ class CRSPSolution:
             self.T,
             self.I,
             self.B,
+            self.PPP,
             new_mutation_strength
         )
 
@@ -105,7 +105,7 @@ class CRSPSolution:
 
         for k in range(self.K):
             if(np.random.random() < self.mutation_strength):
-                self.plan[:,:,k] = self.generate_plot()
+                self.plan[:,:,k] = self.generate_plot(k)
 
         #for i in range(self.N):
         #    for j in self.I[i]:
@@ -201,19 +201,32 @@ class CRSP:
             for idx, crop in enumerate(self.crops):
                 if crop["name"] in ["grasak"]:
                     self.D.append(idx)
+            
+            self.PPP = np.zeros((
+                self.N,
+                self.K
+            )) # Plants per plot
+
+            for c in range(self.N):
+                for k in range(self.K):
+                    self.PPP[c][k] = math.floor(self.P[c]*0.0001*self.Ka[k])
 
 
     def objective(self, sol):
 
         score = 0
+        planted = set()
 
         for k in range(self.K):
             for c in range(self.N-1):
                 for t in self.I[c]:
                     #score += sol.plan[c][t][k] * self.T[c] # Time on land spent growing
-                    score += sol.plan[c][t][k] * (self.Y[c]*1000/self.P[c]) * math.floor(self.P[c]*0.0001*self.Ka[k]) # Maximize yield
-                    #score += sol.plan[c][t][k] * self.crops[c]["plants_per_hectare"]/100/100
+                    #score += sol.plan[c][t][k] * (self.Y[c]*1000/self.P[c]) * self.PPP[c][k] # Maximize yield
 
+                    if sol.plan[c][t][k] == 1:
+                        planted.add(c)
+
+        score += len(planted)
         return score
 
     def constraint2(self, sol):
@@ -325,8 +338,7 @@ class CRSP:
         penalty = self.hard_penalty * _sum
 
         return penalty
-
-
+    
     @property
     def best_objective(self):
         return self.objective(self.best_sol)
@@ -342,7 +354,8 @@ class CRSP:
                 self.K,
                 self.T,
                 self.I,
-                self.B
+                self.B,
+                self.PPP
             )
 
             member.initialize()
@@ -360,10 +373,6 @@ class CRSP:
                    self.constraint7(sol) +\
                    self.constraint8(sol)
         
-        if sol.plan[:-1,:,:].sum() == 0:
-            return float("-inf")
-        
-
         if _fitness > self.best_fitness:
             self.best_fitness = _fitness
             self.best_sol = sol
