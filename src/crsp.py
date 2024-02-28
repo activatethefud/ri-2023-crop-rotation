@@ -117,7 +117,7 @@ class CRSPSolution:
         return self
 
 class CRSP:
-    def __init__(self, problem_filename):
+    def __init__(self, problem_filename, objective_function_name):
         self.load_problem(problem_filename)
 
         self.hard_penalty = -100
@@ -133,6 +133,12 @@ class CRSP:
         self.running_counter = 0
         self.running_sum = 0
         self.report_freq = 30
+        
+        self.objective_function_name = objective_function_name
+
+        self.objective_function_mapping = {
+            "obj_different_crops" : self.obj_different_crops
+        }
 
     def load_problem(self, problem_filename: str):
 
@@ -212,7 +218,7 @@ class CRSP:
                     self.PPP[c][k] = math.floor(self.P[c]*0.0001*self.Ka[k])
 
 
-    def objective(self, sol):
+    def obj_different_crops(self, sol):
 
         score = 0
         planted = set()
@@ -228,6 +234,27 @@ class CRSP:
 
         score += len(planted)
         return score
+    
+    def obj_maximize_yield(self, sol):
+
+        score = 0
+        planted = set()
+
+        for k in range(self.K):
+            for c in range(self.N-1):
+                for t in self.I[c]:
+                    #score += sol.plan[c][t][k] * self.T[c] # Time on land spent growing
+                    #score += sol.plan[c][t][k] * (self.Y[c]*1000/self.P[c]) * self.PPP[c][k] # Maximize yield
+
+                    if sol.plan[c][t][k] == 1:
+                        planted.add(c)
+
+        score += len(planted)
+        return score
+
+    
+    def objective(self, sol):
+        return self.objective_function_mapping[self.objective_function_name](sol)
 
     def constraint2(self, sol):
 
@@ -412,12 +439,13 @@ class CRSP:
             self.population = new_pop
     
 
-    def render_solution(self, sol = None, save_fig = False):
+    def render_solution(self, sol = None, fig_filename = ""):
 
         if sol == None:
             sol = self.best_sol
         
         labels = set()
+        labels_ordered = []
         width = 1
         max_x = self.M
         fig, ax = plt.subplots()
@@ -453,7 +481,11 @@ class CRSP:
                 color = crop_colors[crop_name]
                 bottom = [k] * len(xs)
                 label = crop_name if crop_name not in labels else None
-                labels.add(crop_name)
+
+                if crop_name not in labels:
+                    labels.add(crop_name)
+                    labels_ordered.append(crop_name)
+
                 ax.bar(xs, ys, width, bottom = bottom, color = color, label = label, align="edge")
         
 
@@ -470,4 +502,7 @@ class CRSP:
         plt.grid(axis='x')
         plt.grid(axis='y')
 
-        plt.show()
+        if fig_filename == "":
+            plt.show()
+        else:
+            plt.savefig(fig_filename)
