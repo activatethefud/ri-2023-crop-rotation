@@ -245,6 +245,38 @@
     "plants_per_hectare": 15000,
     "yield": 40
   },
+{
+    "name": "blitva",
+    "family": "Amaranthaceae",
+    "planting_month": [2, 3, 9],
+    "grow_time": 50,
+    "plants_per_hectare": 30000,
+    "yield": 20
+  },
+  {
+    "name": "boranija",
+    "family": "Fabaceae",
+    "planting_month": [4, 5],
+    "grow_time": 60,
+    "plants_per_hectare": 20000,
+    "yield": 5
+  },
+  {
+    "name": "beli luk",
+    "family": "Amaryllidaceae",
+    "planting_month": [10],
+    "grow_time": 240,
+    "plants_per_hectare": 100000,
+    "yield": 10
+  },
+  {
+    "name": "crni luk",
+    "family": "Amaryllidaceae",
+    "planting_month": [3, 9],
+    "grow_time": 120,
+    "plants_per_hectare": 100000,
+    "yield": 15
+  },
   {
      "name": "fallow",
      "family": "fallow",
