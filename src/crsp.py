@@ -497,7 +497,7 @@ class CRSP:
                 ax.bar(xs, ys, width, bottom = bottom, color = color, label = label, align="edge")
         
 
-        plt.title(f"Crop Rotation ({self.objective_function_name})")
+        plt.title(f"Crop Rotation ({self.objective_function_name} | {self.best_objective:.2f})")
         ax.set_xlabel("Period")
         ax.set_ylabel("Plot")
         ax.set_xticks(list(range(max_x+1)))
