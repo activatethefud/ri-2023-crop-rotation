@@ -137,8 +137,19 @@ class CRSP:
         self.objective_function_name = objective_function_name
 
         self.objective_function_mapping = {
-            "obj_different_crops" : self.obj_different_crops
+            "obj_different_crops" : self.obj_different_crops,
+            "obj_maximize_yield" : self.obj_maximize_yield
         }
+    
+    def list_objective_names(self):
+        return self.objective_function_mapping.keys()
+
+    def set_objective_function(self, new_objective_function_name):
+
+        if self.objective_function_mapping.get(new_objective_function_name) == None:
+            raise KeyError(new_objective_function_name)
+        
+        self.objective_function_name = new_objective_function_name
 
     def load_problem(self, problem_filename: str):
 
@@ -238,18 +249,13 @@ class CRSP:
     def obj_maximize_yield(self, sol):
 
         score = 0
-        planted = set()
 
         for k in range(self.K):
             for c in range(self.N-1):
                 for t in self.I[c]:
-                    #score += sol.plan[c][t][k] * self.T[c] # Time on land spent growing
-                    #score += sol.plan[c][t][k] * (self.Y[c]*1000/self.P[c]) * self.PPP[c][k] # Maximize yield
+                    yd = sol.plan[c][t][k] * (self.Y[c]/self.P[c]) * self.PPP[c][k]
+                    score += 1000*yd # Maximize yield
 
-                    if sol.plan[c][t][k] == 1:
-                        planted.add(c)
-
-        score += len(planted)
         return score
 
     
@@ -418,6 +424,8 @@ class CRSP:
     def solve(self, numof_generations):
         self.init()
 
+        print("Optimizing objective function: ", self.objective_function_name)
+
         for gen_idx in range(numof_generations):
 
             scores = sorted([(self.fitness(s), s) for s in self.population], key = lambda x: x[0], reverse=True)
@@ -489,7 +497,7 @@ class CRSP:
                 ax.bar(xs, ys, width, bottom = bottom, color = color, label = label, align="edge")
         
 
-        plt.title("Crop Rotation")
+        plt.title(f"Crop Rotation ({self.objective_function_name})")
         ax.set_xlabel("Period")
         ax.set_ylabel("Plot")
         ax.set_xticks(list(range(max_x+1)))
