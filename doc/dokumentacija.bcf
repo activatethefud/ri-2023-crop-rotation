@@ -2346,6 +2346,7 @@
   <bcf:section number="0">
     <bcf:citekey order="1">geraldi</bcf:citekey>
     <bcf:citekey order="2">geraldi</bcf:citekey>
+    <bcf:citekey order="3">geraldi</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">
@@ -2385,8 +2386,5 @@
                 labelprefix=""
                 uniquenametemplatename="global"
                 labelalphanametemplatename="global">
-  </bcf:datalist>
-</bcf:controlfile>
-e="global">
   </bcf:datalist>
 </bcf:controlfile>
