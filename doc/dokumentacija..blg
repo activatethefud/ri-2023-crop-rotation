@@ -1,0 +1,5 @@
+[0] Config.pm:307> INFO - This is Biber 2.17
+[1] Config.pm:310> INFO - Logfile is 'dokumentacija..blg'
+[163] biber:340> INFO - === нд юни 23, 2024, 00:02:10
+[274] Utils.pm:398> ERROR - Cannot find 'dokumentacija..bcf'!
+[275] Biber.pm:135> INFO - ERRORS: 1

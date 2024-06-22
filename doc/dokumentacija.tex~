@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage{polyglossia}
+\setmainlanguage{serbian} 
+\newfontfamily\cyrillicfont{FreeSerif}
+\usepackage{authblk}
+\usepackage{blindtext}
+
+\title{Проблем ротације усева}
+\author{Никола Шутић}
+\affil{Математички факултет, Универзитет у Београду}
+
+\begin{document}
+\maketitle
+\newpage
+
+\tableofcontents
+
+\section{Увод}
+\blindtext
+
+\section{Проблем ротације усева}
+\subsection{Дефиница проблема}
+\blindtext
+
+
+\end{document}
