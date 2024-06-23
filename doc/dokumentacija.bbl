@@ -48,6 +48,33 @@
       \endverb
       \keyw{agriculture}
     \endentry
+    \entry{dwave}{online}{}
+      \name{author}{1}{}{%
+        {{hash=fb26333316fc48c33388e31441223d90}{%
+           family={Stevanovic},
+           familyi={S\bibinitperiod},
+           given={Radomir},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{fb26333316fc48c33388e31441223d90}
+      \strng{fullhash}{fb26333316fc48c33388e31441223d90}
+      \strng{bibnamehash}{fb26333316fc48c33388e31441223d90}
+      \strng{authorbibnamehash}{fb26333316fc48c33388e31441223d90}
+      \strng{authornamehash}{fb26333316fc48c33388e31441223d90}
+      \strng{authorfullhash}{fb26333316fc48c33388e31441223d90}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{dwave-examples /crop-rotation}
+      \verb{urlraw}
+      \verb https://github.com/dwave-examples/crop-rotation
+      \endverb
+      \verb{url}
+      \verb https://github.com/dwave-examples/crop-rotation
+      \endverb
+      \keyw{constraint}
+    \endentry
   \enddatalist
 \endrefsection
 \endinput
