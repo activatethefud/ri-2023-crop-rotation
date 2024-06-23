@@ -5,6 +5,7 @@ import functools
 import operator
 import math
 import matplotlib.pyplot as plt
+import copy
 
 class CRSPSolution:
 
@@ -115,6 +116,11 @@ class CRSPSolution:
 
         self.mutation_strength *= np.exp(self.learning_rate * np.random.randn())
         return self
+
+    def copy(self):
+        cpy = copy.copy(self)
+        cpy.plan = np.copy(self.plan)
+        return cpy
 
 class CRSP:
     def __init__(self, problem_filename, objective_function_name):
@@ -243,7 +249,7 @@ class CRSP:
                     if sol.plan[c][t][k] == 1:
                         planted.add(c)
 
-        score += len(planted)
+        score = len(planted)
         return score
     
     def obj_maximize_yield(self, sol):
@@ -429,10 +435,8 @@ class CRSP:
         for gen_idx in range(numof_generations):
 
             scores = sorted([(self.fitness(s), s) for s in self.population], key = lambda x: x[0], reverse=True)
-            #new_pop = [x[1] for x in scores[:2]]
             new_pop = [s[1] for s in scores[:self.elitism]]
 
-            #for _ in range(self.population_size - 2):
             for _ in range(self.elitism,self.population_size):
 
                 parent_idx, parent_idx_2 = rd.choices( range(self.numof_parents), k = 2)
@@ -441,11 +445,48 @@ class CRSP:
                 parent2 = scores[parent_idx_2][1]
 
                 child = parent.crossover(parent2).mutation()
-                #child = parent.crossover(parent2)
                 new_pop.append(child)
             
             self.population = new_pop
-    
+
+
+    def brute_force(self, search_size):
+
+        sol = CRSPSolution(
+            self.N,
+            self.M,
+            self.K,
+            self.T,
+            self.I,
+            self.B,
+            self.PPP
+        )
+
+        def backtrack(sol, n, tk, it):
+            nonlocal search_size, self
+
+            t = tk % self.M
+            k = tk // self.K
+
+            if it >= search_size or k >= self.K:
+                return sol
+            
+            if t in self.I[n]:
+                sol.plan[n,t,k] = 1
+            
+            l = backtrack(sol.copy(), n, tk+1, it+1)
+
+            if t + self.T[n] > self.M or not t in self.I[n]:
+                r = backtrack(sol.copy(), n+1, tk+1, it+1)
+            else:
+                r = backtrack(sol.copy(), n+1, tk+self.T[n]+1, it+1)
+            m = l if self.fitness(l) > self.fitness(r) else r
+
+            print(self.fitness(m), (n,t,k,it))
+            return m
+
+        return backtrack(sol, 0, 0, 0)
+
 
     def render_solution(self, sol = None, fig_filename = ""):
 
@@ -497,7 +538,7 @@ class CRSP:
                 ax.bar(xs, ys, width, bottom = bottom, color = color, label = label, align="edge")
         
 
-        plt.title(f"Crop Rotation ({self.objective_function_name} | {self.best_objective:.2f})")
+        plt.title(f"Crop Rotation ({self.objective_function_name} | {self.objective(sol):.2f})")
         ax.set_xlabel("Period")
         ax.set_ylabel("Plot")
         ax.set_xticks(list(range(max_x+1)))
