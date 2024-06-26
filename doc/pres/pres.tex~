@@ -1,0 +1,83 @@
+\documentclass{beamer}
+\usepackage{fontspec}
+%\usepackage[T2A]{inputenc}
+%\usepackage{tikz}
+%\usepackage{multicol}
+%\usepackage{amsmath}
+%\setmainfont{DejaVu Serif}
+\usepackage[serbian]{babel}
+\setmainfont{FreeSerif}
+
+\title{Problem rotacije useva}
+\author{Nikola Šutić}
+\date{12.5.2024}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Uvod}
+  
+  \begin{itemize}
+  \item{Koncept rotacije useva}
+  \item{Potreba za rotacijom useva}
+  \item{Problem sa ručnim planiranjem}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Principi}
+
+  \begin{itemize}
+  \item{Rotacija useva: principi, benefiti, izazovi}
+  \item{Genetski algoritam: koncept, postuptak i prilagođenje problemu useva}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Postavka problema}
+
+  \begin{itemize}
+  \item{Optimizacija rotacije useva}
+  \item{Faktori koji utiču: nutrienti zemljišta, upravljanje bolestima i napastima, klima, prinos itd.}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Metodologija}
+
+  \begin{itemize}
+  \item{Opis algoritma - inicijalizacija, ukrštanje, odabir roditelja, fitnes jedinke, mutacija}
+  \item{Prilagođavanje problema algoritmu}
+  \item{Ograničenja}
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Implementacija i delovi koda}
+
+  \begin{itemize}
+  \item{Inicijalizacija:}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Rezultat i diskusija}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ograničenja i dalji rad}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Zaključak}
+
+  \begin{itemize}
+  \item{Problem, rešenje, rezultat}
+  \item{Primena naprednih optimizacionih algoritama u polju poljoprivrede}
+  \end{itemize}
+\end{frame}
+
+\end{document}

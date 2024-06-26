@@ -1,0 +1,14 @@
+\frametitle{Implementacija i delovi koda}
+
+  \begin{lstlisting}[language=Python]
+      def fitness(self, sol):
+
+        _fitness = self.objective(sol) +\
+                   self.constraint2(sol) +\
+                   self.constraint3(sol) +\
+                   self.constraint4(sol) +\
+                   self.constraint5(sol) +\
+                   self.constraint6(sol) +\
+                   self.constraint7(sol) +\
+                   self.constraint8(sol)
+  \end{lstlisting}
